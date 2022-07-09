@@ -3,6 +3,7 @@ package com.kofteciyusuf.app.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,7 +21,9 @@ public class Order {
     private Date createDate;
     private Date updateDate;
     private boolean isDeleted;
+    @NonNull
     private String deskId;
+    @NonNull
     private List<OrderProduct> orderProductList;
     private String status;
     private boolean isComplated;

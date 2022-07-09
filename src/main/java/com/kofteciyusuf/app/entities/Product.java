@@ -3,6 +3,7 @@ package com.kofteciyusuf.app.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,7 +20,9 @@ public class Product {
     private Date createDate;
     private Date updateDate;
     private boolean isDeleted;
+    @NonNull
     private String name;
+    @NonNull
     private int price;
 
 }
