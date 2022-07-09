@@ -1,6 +1,6 @@
 package com.kofteciyusuf.app.businness.managers;
 
-import com.kofteciyusuf.app.businness.enums.OrderEnums;
+import com.kofteciyusuf.app.enums.OrderEnums;
 import com.kofteciyusuf.app.businness.services.OrderService;
 import com.kofteciyusuf.app.entities.Desk;
 import com.kofteciyusuf.app.entities.Order;
@@ -29,46 +29,58 @@ public class OrderManager implements OrderService {
 
     @Override
     public Order createOrder(Order order) {
-        order.setCreateDate(new Date());
-        order.setUpdateDate(new Date());
-        order.setDeleted(false);
-        order.setStatus(OrderEnums.WAITING.toString());
-        order.setComplated(false);
 
-        this.orderRepository.save(order);
+        try{
+            order.setCreateDate(new Date());
+            order.setUpdateDate(new Date());
+            order.setDeleted(false);
+            order.setStatus(OrderEnums.WAITING.toString());
+            order.setComplated(false);
 
-        Desk desk = this.deskRepository.findById(order.getDeskId()).orElseGet(Desk::new);
+            this.orderRepository.save(order);
 
-        desk.setUpdateDate(new Date());
-        desk.setActiveOrderId(order.getId());
+            Desk desk = this.deskRepository.findById(order.getDeskId()).orElseGet(Desk::new);
 
-        this.deskRepository.save(desk);
+            desk.setUpdateDate(new Date());
+            desk.setActiveOrderId(order.getId());
 
+            this.deskRepository.save(desk);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return order;
     }
 
     @Override
     public Order complateToOrder(String orderId) {
         Order order = this.orderRepository.findById(orderId).orElseGet(Order::new);
-        order.setComplated(true);
-        order.setUpdateDate(new Date());
-        order.setStatus(OrderEnums.READY.toString());
 
-        this.orderRepository.save(order);
+        try{
+            order.setComplated(true);
+            order.setUpdateDate(new Date());
+            order.setStatus(OrderEnums.READY.toString());
 
+            this.orderRepository.save(order);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return order;
     }
 
     @Override
     public Order deleteOrder(String orderId) {
         Order order = this.orderRepository.findById(orderId).orElseGet(Order::new);
-        order.setDeleted(true);
-        order.setStatus(OrderEnums.CANCEL.toString());
-        order.setUpdateDate(new Date());
-        order.setComplated(false);
 
-        this.orderRepository.save(order);
+        try{
+            order.setDeleted(true);
+            order.setStatus(OrderEnums.CANCEL.toString());
+            order.setUpdateDate(new Date());
+            order.setComplated(false);
 
+            this.orderRepository.save(order);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return order;
     }
 
@@ -88,23 +100,27 @@ public class OrderManager implements OrderService {
         Order order = this.orderRepository.findById(orderId).orElseGet(Order::new);
         Desk desk = this.deskRepository.findById(order.getDeskId()).orElseGet(Desk::new);
 
-        //masa değiştirirken kalkılan masanın müsaitlik durumu true olarak güncellenecek
-        desk.setActiveOrderId(null);
-        desk.setUpdateDate(new Date());
+        try{
+            //masa değiştirirken kalkılan masanın müsaitlik durumu true olarak güncellenecek
+            desk.setActiveOrderId(null);
+            desk.setUpdateDate(new Date());
 
-        this.deskRepository.save(desk);
+            this.deskRepository.save(desk);
 
-        order.setDeskId(deskId);
-        order.setUpdateDate(new Date());
+            order.setDeskId(deskId);
+            order.setUpdateDate(new Date());
 
-        Desk newDesk = this.deskRepository.findById(deskId).orElseGet(Desk::new);
+            Desk newDesk = this.deskRepository.findById(deskId).orElseGet(Desk::new);
 
-        newDesk.setActiveOrderId(order.getId());
-        newDesk.setUpdateDate(new Date());
+            newDesk.setActiveOrderId(order.getId());
+            newDesk.setUpdateDate(new Date());
 
-        this.orderRepository.save(order);
-        this.deskRepository.save(newDesk);
+            this.orderRepository.save(order);
+            this.deskRepository.save(newDesk);
 
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return order;
     }
 }

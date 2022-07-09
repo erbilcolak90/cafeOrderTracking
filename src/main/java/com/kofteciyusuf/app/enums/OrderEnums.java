@@ -1,4 +1,4 @@
-package com.kofteciyusuf.app.businness.enums;
+package com.kofteciyusuf.app.enums;
 
 public enum OrderEnums {
     WAITING,PREPARING,READY,CANCEL

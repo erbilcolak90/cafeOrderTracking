@@ -5,6 +5,10 @@ import com.kofteciyusuf.app.entities.Product;
 import com.kofteciyusuf.app.repositories.ProductRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,38 +28,72 @@ public class ProductManager implements ProductService {
     @Override
     public Product addProduct(Product product) {
 
-        product.setCreateDate(new Date());
-        product.setUpdateDate(new Date());
-        product.setDeleted(false);
+        try{
+            product.setCreateDate(new Date());
+            product.setUpdateDate(new Date());
+            product.setDeleted(false);
 
-        this.productRepository.save(product);
+            this.productRepository.save(product);
 
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return product;
+
     }
 
     @Override
     public List<Product> getProducts() {
+
+        try{
+            List<Product> productList = this.productRepository.findAll();
+        }catch (Exception ex){
+                ex.printStackTrace();
+        }
         return this.productRepository.findAll();
     }
 
     @Override
     public Product changeProductPrice(String id,int price) {
         Product product = this.productRepository.findById(id).orElseGet(Product::new);
-        product.setPrice(price);
-        product.setUpdateDate(new Date());
 
-        this.productRepository.save(product);
+        try{
+            product.setPrice(price);
+            product.setUpdateDate(new Date());
+
+            this.productRepository.save(product);
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return product;
     }
 
     @Override
     public Product deleteProduct(String id) {
         Product product = this.productRepository.findById(id).orElseGet(Product::new);
-        product.setDeleted(true);
-        product.setUpdateDate(new Date());
 
-        this.productRepository.save(product);
+        try{
+            product.setDeleted(true);
+            product.setUpdateDate(new Date());
 
+            this.productRepository.save(product);
+        }catch (Exception ex){
+            if(this.productRepository.findById(id) == null){
+               ex.printStackTrace();
+            }
+        }
         return product;
     }
+
+    @Override
+    public Page<Product> getProductList(int number, int size) {
+
+        Pageable pageable = PageRequest.of(number,size,Sort.by(Sort.Direction.DESC,"name"));
+        Page<Product> productPage = this.productRepository.findAll(pageable);
+
+        return  productPage;
+    }
 }
+
+

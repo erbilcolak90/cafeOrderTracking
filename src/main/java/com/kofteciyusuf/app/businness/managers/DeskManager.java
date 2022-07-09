@@ -24,13 +24,17 @@ public class DeskManager implements DeskService {
 
     @Override
     public Desk addDesk(Desk desk) {
-        desk.setCreateDate(new Date());
-        desk.setUpdateDate(new Date());
-        desk.setFree(true);
-        desk.setActiveOrderId(null);
 
-        this.deskRepository.save(desk);
+        try{
+            desk.setCreateDate(new Date());
+            desk.setUpdateDate(new Date());
+            desk.setActiveOrderId(null);
 
+            this.deskRepository.save(desk);
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return desk;
     }
 

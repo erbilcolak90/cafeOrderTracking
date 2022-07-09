@@ -41,31 +41,30 @@ public class OrderProductManager implements OrderProductService {
     public OrderProduct addOrderProduct(OrderProduct orderProduct) {
 
         Product product = this.productRepository.findById(orderProduct.getProductId()).orElseGet(Product::new);
-
-        orderProduct.setCreateDate(new Date());
-        orderProduct.setUpdateDate(new Date());
-        orderProduct.setDeleted(false);
-        orderProduct.setCurrentProductPrice(product.getPrice());
-        this.orderProductRepository.save(orderProduct);
-
         Order order = this.orderRepository.findById(orderProduct.getOrderId()).orElseGet(Order::new);
 
-        if(order.getOrderProductList()==null){
-            List<OrderProduct> tempOrderProductList = new ArrayList<OrderProduct>();
-            order.setOrderProductList(tempOrderProductList);
+        try{
+            orderProduct.setCreateDate(new Date());
+            orderProduct.setUpdateDate(new Date());
+            orderProduct.setDeleted(false);
+            orderProduct.setCurrentProductPrice(product.getPrice());
+            this.orderProductRepository.save(orderProduct);
+
+            if(order.getOrderProductList()==null){
+                List<OrderProduct> tempOrderProductList = new ArrayList<OrderProduct>();
+                order.setOrderProductList(tempOrderProductList);
+            }
+
+            List<OrderProduct> orderProductList = order.getOrderProductList();
+
+            orderProductList.add(orderProduct);
+
+            order.setOrderProductList(orderProductList);
+            order.setUpdateDate(new Date());
+            this.orderRepository.save(order);
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
-
-
-        List<OrderProduct> orderProductList = order.getOrderProductList();
-
-        orderProductList.add(orderProduct);
-
-        order.setOrderProductList(orderProductList);
-        order.setUpdateDate(new Date());
-
-
-        this.orderRepository.save(order);
-
         return orderProduct;
     }
 
@@ -73,11 +72,14 @@ public class OrderProductManager implements OrderProductService {
     public OrderProduct deleteOrderProduct(String orderProductId) {
         OrderProduct orderProduct = this.orderProductRepository.findById(orderProductId).orElseGet(OrderProduct::new);
 
-        orderProduct.setDeleted(true);
-        orderProduct.setUpdateDate(new Date());
+        try{
+            orderProduct.setDeleted(true);
+            orderProduct.setUpdateDate(new Date());
 
-        this.orderProductRepository.save(orderProduct);
-
+            this.orderProductRepository.save(orderProduct);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return orderProduct;
     }
 }
