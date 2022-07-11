@@ -5,6 +5,7 @@ import com.kofteciyusuf.app.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,18 +20,8 @@ public class OrderController {
     }
 
     @PostMapping("/createOrder")
-    public Order createOrder(@RequestBody Order order){
+    public Order createOrder(@Valid @RequestBody Order order){
         return this.orderService.createOrder(order);
-    }
-
-    @PutMapping("/complateToOrder")
-    public Order complateToOrder(@RequestParam String orderId){
-        return this.orderService.complateToOrder(orderId);
-    }
-
-    @DeleteMapping("/deleteOrder")
-    public Order deleteOrder(@RequestParam String orderId){
-        return this.orderService.deleteOrder(orderId);
     }
 
     @GetMapping("/getOrder")
@@ -43,8 +34,18 @@ public class OrderController {
         return this.orderService.getAllOrders();
     }
 
+    @PutMapping("/complateToOrder")
+    public Order complateToOrder(@Valid @RequestParam String orderId){
+        return this.orderService.complateToOrder(orderId);
+    }
     @PutMapping("/changeToOrderDesk")
-    public Order changeToOrderDesk(@RequestParam String orderId,@RequestParam String deskId){
+    public Order changeToOrderDesk(@Valid @RequestParam String orderId,@RequestParam String deskId){
         return this.orderService.changeToOrderDesk(orderId,deskId);
     }
+    @DeleteMapping("/deleteOrder")
+    public Order deleteOrder(@Valid @RequestParam String orderId){
+        return this.orderService.deleteOrder(orderId);
+    }
+
+
 }

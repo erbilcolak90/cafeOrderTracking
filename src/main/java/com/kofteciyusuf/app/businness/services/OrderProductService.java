@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface OrderProductService {
 
-    List<OrderProduct> getOrderProducts();
+    List<OrderProduct> getAllOrderProducts();
 
     OrderProduct addOrderProduct(OrderProduct orderProduct);
 

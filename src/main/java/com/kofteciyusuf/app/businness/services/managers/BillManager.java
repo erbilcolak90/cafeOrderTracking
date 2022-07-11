@@ -1,4 +1,4 @@
-package com.kofteciyusuf.app.businness.managers;
+package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.BillService;
 import com.kofteciyusuf.app.entities.Bill;

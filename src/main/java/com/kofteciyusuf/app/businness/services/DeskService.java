@@ -9,6 +9,6 @@ public interface DeskService {
     Desk addDesk(Desk desk);
 
     List<Desk> getAllDesks();
-
+    Desk deleteDesk(String deskId);
 
 }

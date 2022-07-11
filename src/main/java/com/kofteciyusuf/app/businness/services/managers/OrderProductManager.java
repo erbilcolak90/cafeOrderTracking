@@ -1,4 +1,4 @@
-package com.kofteciyusuf.app.businness.managers;
+package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.OrderProductService;
 import com.kofteciyusuf.app.entities.Order;
@@ -32,54 +32,56 @@ public class OrderProductManager implements OrderProductService {
         this.productRepository = productRepository;
     }
 
-    @Override
-    public List<OrderProduct> getOrderProducts() {
-        return this.orderProductRepository.findAll();
-    }
 
     @Override
     public OrderProduct addOrderProduct(OrderProduct orderProduct) {
-
-        Product product = this.productRepository.findById(orderProduct.getProductId()).orElseGet(Product::new);
-        Order order = this.orderRepository.findById(orderProduct.getOrderId()).orElseGet(Order::new);
-
-        try{
+        try {
+            Product product = this.productRepository.findById(orderProduct.getProductId()).orElseThrow();
+            Order order = this.orderRepository.findById(orderProduct.getOrderId()).orElseThrow();
             orderProduct.setCreateDate(new Date());
             orderProduct.setUpdateDate(new Date());
             orderProduct.setDeleted(false);
             orderProduct.setCurrentProductPrice(product.getPrice());
+
+            //save orderproduct database
             this.orderProductRepository.save(orderProduct);
 
-            if(order.getOrderProductList()==null){
-                List<OrderProduct> tempOrderProductList = new ArrayList<OrderProduct>();
-                order.setOrderProductList(tempOrderProductList);
-            }
-
             List<OrderProduct> orderProductList = order.getOrderProductList();
-
             orderProductList.add(orderProduct);
-
             order.setOrderProductList(orderProductList);
             order.setUpdateDate(new Date());
+            //save order database
             this.orderRepository.save(order);
-        }catch (Exception ex){
+
+            return orderProduct;
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return orderProduct;
+        return null;
     }
 
     @Override
-    public OrderProduct deleteOrderProduct(String orderProductId) {
-        OrderProduct orderProduct = this.orderProductRepository.findById(orderProductId).orElseGet(OrderProduct::new);
-
-        try{
-            orderProduct.setDeleted(true);
-            orderProduct.setUpdateDate(new Date());
-
-            this.orderProductRepository.save(orderProduct);
-        }catch (Exception ex){
+    public List<OrderProduct> getAllOrderProducts() {
+        try {
+            return this.orderProductRepository.findAll();
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return orderProduct;
+        return null;
+    }
+    @Override
+    public OrderProduct deleteOrderProduct(String orderProductId) {
+        try {
+            OrderProduct orderProduct = this.orderProductRepository.findById(orderProductId).orElseThrow();
+            orderProduct.setDeleted(true);
+            orderProduct.setUpdateDate(new Date());
+            //save orderProduct database
+            this.orderProductRepository.save(orderProduct);
+            return orderProduct;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

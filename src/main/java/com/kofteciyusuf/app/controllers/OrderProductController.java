@@ -5,6 +5,7 @@ import com.kofteciyusuf.app.entities.OrderProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,18 +19,16 @@ public class OrderProductController {
         this.orderProductService = orderProductService;
     }
 
-    @GetMapping("/getOrderProducts")
-    public List<OrderProduct> getOrderProducts(){
-        return this.orderProductService.getOrderProducts();
-    }
-
     @PostMapping("/addOrderProduct")
-    public OrderProduct addOrderProduct(@RequestBody OrderProduct orderProduct){
+    public OrderProduct addOrderProduct(@Valid @RequestBody OrderProduct orderProduct){
         return this.orderProductService.addOrderProduct(orderProduct);
     }
-
+    @GetMapping("/getAllOrderProducts")
+    public List<OrderProduct> getAllOrderProducts(){
+        return this.orderProductService.getAllOrderProducts();
+    }
     @DeleteMapping("/deleteOrderProduct")
-    public OrderProduct deleteOrderProduct(@RequestParam String orderProductId){
+    public OrderProduct deleteOrderProduct(@Valid @RequestParam String orderProductId){
         return this.deleteOrderProduct(orderProductId);
     }
 

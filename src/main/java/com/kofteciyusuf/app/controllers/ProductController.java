@@ -4,6 +4,8 @@ import com.kofteciyusuf.app.businness.services.ProductService;
 import com.kofteciyusuf.app.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -18,29 +20,36 @@ public class ProductController {
     }
 
     @PostMapping("/addProduct")
-    public Product addProduct(@RequestBody Product product){
+    public Product addProduct(@Valid @RequestBody Product product) {
         return this.productService.addProduct(product);
     }
 
-    @GetMapping("/getProducts")
-    public List<Product> getProducts(){
-        return this.productService.getProducts();
+    @GetMapping("/getProduct")
+    public Product getProduct(@Valid @RequestParam String productId){
+        return this.productService.getProduct(productId);
+    }
+
+    @GetMapping("/getAllProducts")
+    public List<Product> getProducts() {
+        return this.productService.getAllProducts();
+    }
+
+    @GetMapping("/pagebleProductList")
+    public Page<Product> pagebleProductList(@RequestParam int number, @RequestParam int size) {
+        return this.productService.pagebleProductList(number, size);
     }
 
     @PostMapping("/changeProductPrice")
-    public Product changeProductPrice(@RequestParam String id,@RequestParam int price){
-        return this.productService.changeProductPrice(id,price);
+    public Product changeProductPrice(@Valid @RequestParam String id, @RequestParam int price) {
+        return this.productService.changeProductPrice(id, price);
     }
 
     @DeleteMapping("/deleteProduct")
-    public Product deleteProduct(@RequestParam String id){
+    public Product deleteProduct(@Valid @RequestParam String id) {
         return this.productService.deleteProduct(id);
     }
 
-    @GetMapping("/getProductPage")
-    public Page<Product> getProductList(@RequestParam int number,@RequestParam int size){
-        return  this.productService.getProductList(number, size);
-    }
+
 
 
 }

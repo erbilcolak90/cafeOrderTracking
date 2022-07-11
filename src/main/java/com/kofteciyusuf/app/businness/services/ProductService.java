@@ -8,14 +8,14 @@ import java.util.List;
 public interface ProductService {
 
     Product addProduct(Product product);
-
-    List<Product> getProducts();
+    Product getProduct(String productId);
+    List<Product> getAllProducts();
 
     Product changeProductPrice(String id,int price);
 
     Product deleteProduct(String id);
 
-    Page<Product> getProductList(int number,int size);
+    Page<Product> pagebleProductList(int number,int size);
 
 
 

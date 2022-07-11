@@ -1,4 +1,4 @@
-package com.kofteciyusuf.app.businness.managers;
+package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.DeskService;
 import com.kofteciyusuf.app.entities.Desk;
@@ -25,22 +25,42 @@ public class DeskManager implements DeskService {
     @Override
     public Desk addDesk(Desk desk) {
 
-        try{
+        try {
             desk.setCreateDate(new Date());
             desk.setUpdateDate(new Date());
             desk.setActiveOrderId(null);
-
+            //save desk
             this.deskRepository.save(desk);
+            return desk;
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return desk;
+        return null;
     }
 
     @Override
     public List<Desk> getAllDesks() {
-        return this.deskRepository.findAll();
+        try {
+            return this.deskRepository.findAll();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
+    @Override
+    public Desk deleteDesk(String deskId) {
+        try {
+            Desk desk = this.deskRepository.findById(deskId).orElseThrow();
+            desk.setDeleted(true);
+            desk.setUpdateDate(new Date());
+            //save desk database
+            this.deskRepository.save(desk);
+            return desk;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }
