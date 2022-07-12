@@ -1,15 +1,18 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
+import com.kofteciyusuf.app.entities.OrderProduct;
 import com.kofteciyusuf.app.enums.OrderEnums;
 import com.kofteciyusuf.app.businness.services.OrderService;
 import com.kofteciyusuf.app.entities.Desk;
 import com.kofteciyusuf.app.entities.Order;
 import com.kofteciyusuf.app.repositories.DeskRepository;
+import com.kofteciyusuf.app.repositories.OrderProductRepository;
 import com.kofteciyusuf.app.repositories.OrderRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,10 +24,13 @@ public class OrderManager implements OrderService {
 
     private DeskRepository deskRepository;
 
+    private OrderProductRepository orderProductRepository;
+
     @Autowired
-    public OrderManager(OrderRepository orderRepository, DeskRepository deskRepository) {
+    public OrderManager(OrderRepository orderRepository, DeskRepository deskRepository, OrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
         this.deskRepository = deskRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
     @Override
@@ -36,7 +42,7 @@ public class OrderManager implements OrderService {
             order.setDeleted(false);
             order.setStatus(OrderEnums.WAITING.toString());
             order.setComplated(false);
-
+            order.setOrderProductList(new ArrayList<OrderProduct>());
             Desk desk = this.deskRepository.findById(order.getDeskId()).orElseThrow();
             desk.setUpdateDate(new Date());
             desk.setActiveOrderId(order.getId());
@@ -49,6 +55,7 @@ public class OrderManager implements OrderService {
         }
         return null;
     }
+
     @Override
     public Order getOrder(String orderId) {
         try {
@@ -59,6 +66,7 @@ public class OrderManager implements OrderService {
         }
         return null;
     }
+
     @Override
     public List<Order> getAllOrders() {
         try {
@@ -68,13 +76,15 @@ public class OrderManager implements OrderService {
         }
         return null;
     }
+
     @Override
-    public Order complateToOrder(String orderId) {
+    public Order completeOrder(String orderId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
             order.setComplated(true);
             order.setUpdateDate(new Date());
-            order.setStatus(OrderEnums.READY.toString());
+            order.setStatus(OrderEnums.COMPLETE.toString());
+            order.setTotal(order.calculateTotal());
             //save order database
             this.orderRepository.save(order);
             return order;
@@ -83,6 +93,7 @@ public class OrderManager implements OrderService {
         }
         return null;
     }
+
     @Override
     public Order changeToOrderDesk(String orderId, String deskId) {
         try {
@@ -111,16 +122,21 @@ public class OrderManager implements OrderService {
         }
         return null;
     }
+
     @Override
     public Order deleteOrder(String orderId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
+            Desk desk = this.deskRepository.findById(order.getDeskId()).orElseThrow();
             order.setDeleted(true);
             order.setStatus(OrderEnums.CANCEL.toString());
             order.setUpdateDate(new Date());
             order.setComplated(false);
+            order.setDeskId("");
+            desk.setActiveOrderId("");
             //save order database
             this.orderRepository.save(order);
+            this.deskRepository.save(desk);
             return order;
         } catch (Exception ex) {
             ex.printStackTrace();

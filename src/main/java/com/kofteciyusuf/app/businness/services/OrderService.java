@@ -8,7 +8,7 @@ public interface OrderService {
 
     Order createOrder(Order order);
 
-    Order complateToOrder(String orderId);
+    Order completeOrder(String orderId);
 
     Order deleteOrder(String orderId);
 

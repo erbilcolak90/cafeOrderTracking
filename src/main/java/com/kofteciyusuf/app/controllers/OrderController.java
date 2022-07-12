@@ -20,30 +20,32 @@ public class OrderController {
     }
 
     @PostMapping("/createOrder")
-    public Order createOrder(@Valid @RequestBody Order order){
+    public Order createOrder(@Valid @RequestBody Order order) {
         return this.orderService.createOrder(order);
     }
 
     @GetMapping("/getOrder")
-    public Order getOrder(@RequestParam String orderId){
+    public Order getOrder(@RequestParam String orderId) {
         return this.orderService.getOrder(orderId);
     }
 
     @GetMapping("/getAllOrders")
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         return this.orderService.getAllOrders();
     }
 
-    @PutMapping("/complateToOrder")
-    public Order complateToOrder(@Valid @RequestParam String orderId){
-        return this.orderService.complateToOrder(orderId);
+    @PutMapping("/completeOrder")
+    public Order completeOrder(@Valid @RequestParam String orderId) {
+        return this.orderService.completeOrder(orderId);
     }
+
     @PutMapping("/changeToOrderDesk")
-    public Order changeToOrderDesk(@Valid @RequestParam String orderId,@RequestParam String deskId){
-        return this.orderService.changeToOrderDesk(orderId,deskId);
+    public Order changeToOrderDesk(@Valid @RequestParam String orderId, @RequestParam String deskId) {
+        return this.orderService.changeToOrderDesk(orderId, deskId);
     }
+
     @DeleteMapping("/deleteOrder")
-    public Order deleteOrder(@Valid @RequestParam String orderId){
+    public Order deleteOrder(@Valid @RequestParam String orderId) {
         return this.orderService.deleteOrder(orderId);
     }
 
