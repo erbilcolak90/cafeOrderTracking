@@ -1,6 +1,10 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.OrderProductService;
+import com.kofteciyusuf.app.core.DataResult;
+import com.kofteciyusuf.app.core.Result;
+import com.kofteciyusuf.app.core.SuccessDataResult;
+import com.kofteciyusuf.app.core.SuccessResult;
 import com.kofteciyusuf.app.entities.Order;
 import com.kofteciyusuf.app.entities.OrderProduct;
 import com.kofteciyusuf.app.entities.Product;
@@ -9,9 +13,10 @@ import com.kofteciyusuf.app.repositories.OrderRepository;
 import com.kofteciyusuf.app.repositories.ProductRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +39,7 @@ public class OrderProductManager implements OrderProductService {
 
 
     @Override
-    public OrderProduct addOrderProduct(OrderProduct orderProduct) {
+    public Result addOrderProduct(OrderProduct orderProduct) {
         try {
             Product product = this.productRepository.findById(orderProduct.getProductId()).orElseThrow();
             Order order = this.orderRepository.findById(orderProduct.getOrderId()).orElseThrow();
@@ -53,35 +58,32 @@ public class OrderProductManager implements OrderProductService {
             //save order database
             this.orderRepository.save(order);
 
-            return orderProduct;
+            return new SuccessResult("OrderProduct added");
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"OrderProduct not added",ex);
         }
-        return null;
     }
 
     @Override
-    public List<OrderProduct> getAllOrderProducts() {
+    public DataResult<List<OrderProduct>> getAllOrderProducts() {
         try {
-            return this.orderProductRepository.findAll();
+            return new SuccessDataResult<List<OrderProduct>>("OrderProduct listed",this.orderProductRepository.findAll());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"OrderProduct not listed",ex);
         }
-        return null;
     }
     @Override
-    public OrderProduct deleteOrderProduct(String orderProductId) {
+    public Result deleteOrderProduct(String orderProductId) {
         try {
             OrderProduct orderProduct = this.orderProductRepository.findById(orderProductId).orElseThrow();
             orderProduct.setDeleted(true);
             orderProduct.setUpdateDate(new Date());
             //save orderProduct database
             this.orderProductRepository.save(orderProduct);
-            return orderProduct;
+            return new SuccessResult("OrderProduct deleted");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"OrderProduct not deleted",ex);
         }
-        return null;
     }
 }

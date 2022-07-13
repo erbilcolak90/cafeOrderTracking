@@ -1,5 +1,9 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
+import com.kofteciyusuf.app.core.DataResult;
+import com.kofteciyusuf.app.core.Result;
+import com.kofteciyusuf.app.core.SuccessDataResult;
+import com.kofteciyusuf.app.core.SuccessResult;
 import com.kofteciyusuf.app.entities.OrderProduct;
 import com.kofteciyusuf.app.enums.OrderEnums;
 import com.kofteciyusuf.app.businness.services.OrderService;
@@ -10,7 +14,9 @@ import com.kofteciyusuf.app.repositories.OrderProductRepository;
 import com.kofteciyusuf.app.repositories.OrderRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +40,7 @@ public class OrderManager implements OrderService {
     }
 
     @Override
-    public Order createOrder(Order order) {
+    public Result createOrder(Order order) {
 
         try {
             order.setCreateDate(new Date());
@@ -49,36 +55,33 @@ public class OrderManager implements OrderService {
             this.deskRepository.save(desk);
             this.orderRepository.save(order);
 
-            return order;
+            return new SuccessResult("Order created");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Order not created",ex);
         }
-        return null;
     }
 
     @Override
-    public Order getOrder(String orderId) {
+    public DataResult<Order> getOrder(String orderId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
-            return order;
+            return new SuccessDataResult<Order>("Order listed",order);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Order not found",ex);
         }
-        return null;
     }
 
     @Override
-    public List<Order> getAllOrders() {
+    public DataResult<List<Order>> getAllOrders() {
         try {
-            return this.orderRepository.findAll();
+            return new SuccessDataResult<List<Order>>("Orders listed",this.orderRepository.findAll());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Orders not listed",ex);
         }
-        return null;
     }
 
     @Override
-    public Order completeOrder(String orderId) {
+    public DataResult<Order> completeOrder(String orderId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
             order.setComplated(true);
@@ -87,15 +90,14 @@ public class OrderManager implements OrderService {
             order.setTotal(order.calculateTotal());
             //save order database
             this.orderRepository.save(order);
-            return order;
+            return new SuccessDataResult<Order>("Order completed",order);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Order not found",ex);
         }
-        return null;
     }
 
     @Override
-    public Order changeToOrderDesk(String orderId, String deskId) {
+    public DataResult<Order> changeToOrderDesk(String orderId, String deskId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
             Desk desk = this.deskRepository.findById(order.getDeskId()).orElseThrow();
@@ -115,16 +117,15 @@ public class OrderManager implements OrderService {
             this.orderRepository.save(order);
             this.deskRepository.save(newDesk);
 
-            return order;
+            return new SuccessDataResult<Order>("Desk changed");
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Please check orderId or deskId",ex);
         }
-        return null;
     }
 
     @Override
-    public Order deleteOrder(String orderId) {
+    public Result deleteOrder(String orderId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
             Desk desk = this.deskRepository.findById(order.getDeskId()).orElseThrow();
@@ -137,10 +138,9 @@ public class OrderManager implements OrderService {
             //save order database
             this.orderRepository.save(order);
             this.deskRepository.save(desk);
-            return order;
+            return new SuccessResult("Order deleted");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"Order not deleted",ex);
         }
-        return null;
     }
 }

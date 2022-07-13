@@ -1,20 +1,22 @@
 package com.kofteciyusuf.app.businness.services;
 
+import com.kofteciyusuf.app.core.DataResult;
+import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.Order;
 
 import java.util.List;
 
 public interface OrderService {
 
-    Order createOrder(Order order);
+    Result createOrder(Order order);
 
-    Order completeOrder(String orderId);
+    DataResult<Order> completeOrder(String orderId);
 
-    Order deleteOrder(String orderId);
+    Result deleteOrder(String orderId);
 
-    List<Order> getAllOrders();
+    DataResult<List<Order>> getAllOrders();
 
-    Order getOrder(String orderId);
+    DataResult<Order> getOrder(String orderId);
 
-    Order changeToOrderDesk(String orderId,String deskId);
+    DataResult<Order> changeToOrderDesk(String orderId,String deskId);
 }

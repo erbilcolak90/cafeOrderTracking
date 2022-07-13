@@ -1,6 +1,7 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.ProductService;
+import com.kofteciyusuf.app.core.*;
 import com.kofteciyusuf.app.entities.Product;
 import com.kofteciyusuf.app.repositories.ProductRepository;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -40,7 +43,7 @@ public class ProductManager implements ProductService {
      */
 
     @Override
-    public Product addProduct(Product product) {
+    public Result addProduct(Product product) {
 
         try {
             product.setCreateDate(new Date());
@@ -48,77 +51,71 @@ public class ProductManager implements ProductService {
             product.setDeleted(false);
             //save product to database
             this.productRepository.save(product);
-            return product;
+            return new SuccessResult("Product added");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"product not created",ex);
         }
-        return null;
 
     }
 
     @Override
-    public Product getProduct(String productId) {
+    public DataResult<Product> getProduct(String productId) {
         try {
             Product product = this.productRepository.findById(productId).orElseThrow();
-            return product;
+            return new SuccessDataResult<>("Product listed",product);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"product not found",ex);
         }
-        return null;
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public DataResult<List<Product>> getAllProducts() {
 
         try {
-            return this.productRepository.findAll();
+            return new SuccessDataResult<List<Product>>("Products listed",this.productRepository.findAll());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Products not listed",ex);
         }
-        return null;
     }
 
     @Override
-    public Page<Product> pagebleProductList(int number, int size) {
+    public DataResult<Page<Product>> pageableProductList(int pageNumber, int pageSize) {
 
         try {
-            Pageable pageable = PageRequest.of(number, size, Sort.by(Sort.Direction.DESC, "name"));
-            return this.productRepository.findAll(pageable);
+            Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC, "name"));
+            return new SuccessDataResult<Page<Product>>("Page(s) listed",this.productRepository.findAll(pageable));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Page(s) not listed",ex);
         }
-        return null;
     }
 
     @Override
-    public Product changeProductPrice(String id, int price) {
+    public DataResult<Product> changeProductPrice(String productId, int productPrice) {
         try {
-            Product product = this.productRepository.findById(id).orElseThrow();
-            product.setPrice(price);
+            Product product = this.productRepository.findById(productId).orElseThrow();
+            product.setPrice(productPrice);
             product.setUpdateDate(new Date());
             //save product
             this.productRepository.save(product);
-            return product;
+            return new SuccessDataResult<Product>("Product price changed",product);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product is not found",ex);
         }
-        return null;
     }
 
     @Override
-    public Product deleteProduct(String id) {
+    public Result deleteProduct(String productId) {
 
         try {
-            Product product = this.productRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+            Product product = this.productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
             product.setDeleted(true);
             product.setUpdateDate(new Date());
             //save product
             this.productRepository.save(product);
-            return product;
+            return new SuccessResult("Product deleted");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"Product not deleted",ex);
         }
-        return null;
     }
 }
 

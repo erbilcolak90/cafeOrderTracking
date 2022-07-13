@@ -1,14 +1,16 @@
 package com.kofteciyusuf.app.businness.services;
 
+import com.kofteciyusuf.app.core.DataResult;
+import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.OrderProduct;
 
 import java.util.List;
 
 public interface OrderProductService {
 
-    List<OrderProduct> getAllOrderProducts();
+    DataResult<List<OrderProduct>> getAllOrderProducts();
 
-    OrderProduct addOrderProduct(OrderProduct orderProduct);
+    Result addOrderProduct(OrderProduct orderProduct);
 
-    OrderProduct deleteOrderProduct(String orderProductId);
+    Result deleteOrderProduct(String orderProductId);
 }

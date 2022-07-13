@@ -1,11 +1,17 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.DeskService;
+import com.kofteciyusuf.app.core.DataResult;
+import com.kofteciyusuf.app.core.Result;
+import com.kofteciyusuf.app.core.SuccessDataResult;
+import com.kofteciyusuf.app.core.SuccessResult;
 import com.kofteciyusuf.app.entities.Desk;
 import com.kofteciyusuf.app.repositories.DeskRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -23,7 +29,7 @@ public class DeskManager implements DeskService {
 
 
     @Override
-    public Desk addDesk(Desk desk) {
+    public Result addDesk(Desk desk) {
 
         try {
             desk.setCreateDate(new Date());
@@ -31,36 +37,33 @@ public class DeskManager implements DeskService {
             desk.setActiveOrderId(null);
             //save desk
             this.deskRepository.save(desk);
-            return desk;
+            return new SuccessResult("Desk added");
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Desk not created",ex);
         }
-        return null;
     }
 
     @Override
-    public List<Desk> getAllDesks() {
+    public DataResult<List<Desk>> getAllDesks() {
         try {
-            return this.deskRepository.findAll();
+            return new SuccessDataResult<List<Desk>>("Desks listed",this.deskRepository.findAll());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Desks not listed",ex);
         }
-        return null;
     }
 
     @Override
-    public Desk deleteDesk(String deskId) {
+    public Result deleteDesk(String deskId) {
         try {
             Desk desk = this.deskRepository.findById(deskId).orElseThrow();
             desk.setDeleted(true);
             desk.setUpdateDate(new Date());
             //save desk database
             this.deskRepository.save(desk);
-            return desk;
+            return new SuccessResult("Desk deleted");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"Desk not deleted",ex);
         }
-        return null;
     }
 }

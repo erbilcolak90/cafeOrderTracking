@@ -23,7 +23,6 @@ public class Desk {
     private boolean isDeleted;
     @NotBlank(message = "name is mandatory")
     private String tableName;
-    @NotNull
     private String activeOrderId;
 
 }

@@ -1,5 +1,7 @@
 package com.kofteciyusuf.app.businness.services;
 
+import com.kofteciyusuf.app.core.DataResult;
+import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.Product;
 import org.springframework.data.domain.Page;
 
@@ -7,15 +9,15 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product addProduct(Product product);
-    Product getProduct(String productId);
-    List<Product> getAllProducts();
+    Result addProduct(Product product);
+    DataResult<Product> getProduct(String productId);
+    DataResult<List<Product>> getAllProducts();
 
-    Product changeProductPrice(String id,int price);
+    DataResult<Product> changeProductPrice(String productId,int productPrice);
 
-    Product deleteProduct(String id);
+    Result deleteProduct(String productId);
 
-    Page<Product> pagebleProductList(int number,int size);
+    DataResult<Page<Product>> pageableProductList(int pageNumber,int pageSize);
 
 
 
