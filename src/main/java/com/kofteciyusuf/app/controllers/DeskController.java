@@ -1,11 +1,9 @@
 package com.kofteciyusuf.app.controllers;
 
 import com.kofteciyusuf.app.businness.services.DeskService;
-import com.kofteciyusuf.app.core.DataResult;
 import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.Desk;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,7 +26,7 @@ public class DeskController {
     }
 
     @GetMapping("/getAllDesks")
-    public DataResult<List<Desk>> getAllDesks(){
+    public Result<List<Desk>> getAllDesks(){
         return this.deskService.getAllDesks();
     }
 

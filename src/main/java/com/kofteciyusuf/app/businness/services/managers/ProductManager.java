@@ -10,9 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -51,56 +49,60 @@ public class ProductManager implements ProductService {
             product.setDeleted(false);
             //save product to database
             this.productRepository.save(product);
-            return new SuccessResult("Product added");
+            return new Result(true, "Product added",null);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"product not created",ex);
+            ex.printStackTrace();
         }
-
+        return null;
     }
 
     @Override
-    public DataResult<Product> getProduct(String productId) {
+    public Result<Product> getProduct(String productId) {
         try {
             Product product = this.productRepository.findById(productId).orElseThrow();
-            return new SuccessDataResult<>("Product listed",product);
+            return new Result<Product>(true,"Product listed", product);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"product not found",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<List<Product>> getAllProducts() {
+    public Result<List<Product>> getAllProducts() {
 
         try {
-            return new SuccessDataResult<List<Product>>("Products listed",this.productRepository.findAll());
+            return new Result<List<Product>>(true,"Products listed", this.productRepository.findAll());
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Products not listed",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<Page<Product>> pageableProductList(int pageNumber, int pageSize) {
+    public Result<Page<Product>> pageableProductList(int pageNumber, int pageSize) {
 
         try {
-            Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC, "name"));
-            return new SuccessDataResult<Page<Product>>("Page(s) listed",this.productRepository.findAll(pageable));
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "name"));
+            return new Result<Page<Product>>(true,"Page(s) listed", this.productRepository.findAll(pageable));
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Page(s) not listed",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<Product> changeProductPrice(String productId, int productPrice) {
+    public Result<Product> changeProductPrice(String productId, int productPrice) {
         try {
             Product product = this.productRepository.findById(productId).orElseThrow();
             product.setPrice(productPrice);
             product.setUpdateDate(new Date());
             //save product
             this.productRepository.save(product);
-            return new SuccessDataResult<Product>("Product price changed",product);
+            return new Result<Product>(true,"Product price changed", product);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product is not found",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -112,10 +114,11 @@ public class ProductManager implements ProductService {
             product.setUpdateDate(new Date());
             //save product
             this.productRepository.save(product);
-            return new SuccessResult("Product deleted");
+            return new Result(true,"Product deleted",null);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"Product not deleted",ex);
+           ex.printStackTrace();
         }
+        return null;
     }
 }
 

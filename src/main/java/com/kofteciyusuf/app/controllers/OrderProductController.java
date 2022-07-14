@@ -1,7 +1,6 @@
 package com.kofteciyusuf.app.controllers;
 
 import com.kofteciyusuf.app.businness.services.OrderProductService;
-import com.kofteciyusuf.app.core.DataResult;
 import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.OrderProduct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class OrderProductController {
         return this.orderProductService.addOrderProduct(orderProduct);
     }
     @GetMapping("/getAllOrderProducts")
-    public DataResult<List<OrderProduct>> getAllOrderProducts(){
+    public Result<List<OrderProduct>> getAllOrderProducts(){
         return this.orderProductService.getAllOrderProducts();
     }
     @DeleteMapping("/deleteOrderProduct")

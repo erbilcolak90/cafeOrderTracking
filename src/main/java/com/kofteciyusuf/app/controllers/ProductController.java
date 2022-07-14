@@ -1,7 +1,6 @@
 package com.kofteciyusuf.app.controllers;
 
 import com.kofteciyusuf.app.businness.services.ProductService;
-import com.kofteciyusuf.app.core.DataResult;
 import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.Product;
 import org.springframework.data.domain.Page;
@@ -27,23 +26,23 @@ public class ProductController {
     }
 
     @PostMapping("/changeProductPrice")
-    public DataResult<Product> changeProductPrice(@Valid @RequestParam String productId, @RequestParam int productPrice) {
+    public Result<Product> changeProductPrice(@Valid @RequestParam String productId, @RequestParam int productPrice) {
         return this.productService.changeProductPrice(productId, productPrice);
     }
 
 
     @GetMapping("/getProduct")
-    public DataResult<Product> getProduct(@Valid @RequestParam String productId){
+    public Result<Product> getProduct(@Valid @RequestParam String productId){
         return this.productService.getProduct(productId);
     }
 
     @GetMapping("/getAllProducts")
-    public DataResult<List<Product>> getProducts() {
+    public Result<List<Product>> getProducts() {
         return this.productService.getAllProducts();
     }
 
     @GetMapping("/pageableProductList")
-    public DataResult<Page<Product>> pageableProductList(@RequestParam int pageNumber, @RequestParam int pageSize) {
+    public Result<Page<Product>> pageableProductList(@RequestParam int pageNumber, @RequestParam int pageSize) {
         return this.productService.pageableProductList(pageNumber, pageSize);
     }
 

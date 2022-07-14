@@ -1,16 +1,13 @@
 package com.kofteciyusuf.app.core;
 
-public class Result {
+public class Result<T> {
     private boolean success;
     private String message;
-
-    public Result(boolean success, String message) {
+    private T data;
+    public Result(boolean success, String message,T data) {
         this.success = success;
         this.message = message;
-    }
-
-    public Result(boolean success) {
-        this.success = success;
+        this.data = data;
     }
 
     public boolean isSuccess() {
@@ -27,5 +24,13 @@ public class Result {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }

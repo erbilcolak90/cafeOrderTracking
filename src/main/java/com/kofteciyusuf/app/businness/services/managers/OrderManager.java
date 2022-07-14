@@ -1,9 +1,6 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
-import com.kofteciyusuf.app.core.DataResult;
 import com.kofteciyusuf.app.core.Result;
-import com.kofteciyusuf.app.core.SuccessDataResult;
-import com.kofteciyusuf.app.core.SuccessResult;
 import com.kofteciyusuf.app.entities.OrderProduct;
 import com.kofteciyusuf.app.enums.OrderEnums;
 import com.kofteciyusuf.app.businness.services.OrderService;
@@ -55,33 +52,36 @@ public class OrderManager implements OrderService {
             this.deskRepository.save(desk);
             this.orderRepository.save(order);
 
-            return new SuccessResult("Order created");
+            return new Result(true, "Order Created", order);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Order not created",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<Order> getOrder(String orderId) {
+    public Result<Order> getOrder(String orderId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
-            return new SuccessDataResult<Order>("Order listed",order);
+            return new Result<Order>(true, "Order listed", order);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Order not found",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<List<Order>> getAllOrders() {
+    public Result<List<Order>> getAllOrders() {
         try {
-            return new SuccessDataResult<List<Order>>("Orders listed",this.orderRepository.findAll());
+            return new Result<List<Order>>(true, "Orders listed", this.orderRepository.findAll());
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Orders not listed",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<Order> completeOrder(String orderId) {
+    public Result<Order> completeOrder(String orderId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
             order.setComplated(true);
@@ -90,14 +90,15 @@ public class OrderManager implements OrderService {
             order.setTotal(order.calculateTotal());
             //save order database
             this.orderRepository.save(order);
-            return new SuccessDataResult<Order>("Order completed",order);
+            return new Result<Order>(true, "Order completed", order);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Order not found",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<Order> changeToOrderDesk(String orderId, String deskId) {
+    public Result<Order> changeToOrderDesk(String orderId, String deskId) {
         try {
             Order order = this.orderRepository.findById(orderId).orElseThrow();
             Desk desk = this.deskRepository.findById(order.getDeskId()).orElseThrow();
@@ -117,11 +118,12 @@ public class OrderManager implements OrderService {
             this.orderRepository.save(order);
             this.deskRepository.save(newDesk);
 
-            return new SuccessDataResult<Order>("Desk changed");
+            return new Result<Order>(true, "Desk changed", null);
 
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Please check orderId or deskId",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -138,9 +140,10 @@ public class OrderManager implements OrderService {
             //save order database
             this.orderRepository.save(order);
             this.deskRepository.save(desk);
-            return new SuccessResult("Order deleted");
+            return new Result(true,"Order deleted",null);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"Order not deleted",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 }

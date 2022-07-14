@@ -1,10 +1,7 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.DeskService;
-import com.kofteciyusuf.app.core.DataResult;
 import com.kofteciyusuf.app.core.Result;
-import com.kofteciyusuf.app.core.SuccessDataResult;
-import com.kofteciyusuf.app.core.SuccessResult;
 import com.kofteciyusuf.app.entities.Desk;
 import com.kofteciyusuf.app.repositories.DeskRepository;
 import lombok.NoArgsConstructor;
@@ -37,20 +34,22 @@ public class DeskManager implements DeskService {
             desk.setActiveOrderId(null);
             //save desk
             this.deskRepository.save(desk);
-            return new SuccessResult("Desk added");
+            return new Result(true,"Desk added",null);
 
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Desk not created",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<List<Desk>> getAllDesks() {
+    public Result<List<Desk>> getAllDesks() {
         try {
-            return new SuccessDataResult<List<Desk>>("Desks listed",this.deskRepository.findAll());
+            return new Result<List<Desk>>(true,"Desks listed",this.deskRepository.findAll());
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Desks not listed",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -61,9 +60,10 @@ public class DeskManager implements DeskService {
             desk.setUpdateDate(new Date());
             //save desk database
             this.deskRepository.save(desk);
-            return new SuccessResult("Desk deleted");
+            return new Result(true,"Desk deleted",null);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"Desk not deleted",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 }

@@ -1,10 +1,7 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.OrderProductService;
-import com.kofteciyusuf.app.core.DataResult;
 import com.kofteciyusuf.app.core.Result;
-import com.kofteciyusuf.app.core.SuccessDataResult;
-import com.kofteciyusuf.app.core.SuccessResult;
 import com.kofteciyusuf.app.entities.Order;
 import com.kofteciyusuf.app.entities.OrderProduct;
 import com.kofteciyusuf.app.entities.Product;
@@ -58,20 +55,22 @@ public class OrderProductManager implements OrderProductService {
             //save order database
             this.orderRepository.save(order);
 
-            return new SuccessResult("OrderProduct added");
+            return new Result(true,"OrderProduct added",order);
 
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"OrderProduct not added",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public DataResult<List<OrderProduct>> getAllOrderProducts() {
+    public Result<List<OrderProduct>> getAllOrderProducts() {
         try {
-            return new SuccessDataResult<List<OrderProduct>>("OrderProduct listed",this.orderProductRepository.findAll());
+            return new Result<List<OrderProduct>>(true,"OrderProduct listed",this.orderProductRepository.findAll());
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"OrderProduct not listed",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
     @Override
     public Result deleteOrderProduct(String orderProductId) {
@@ -81,9 +80,10 @@ public class OrderProductManager implements OrderProductService {
             orderProduct.setUpdateDate(new Date());
             //save orderProduct database
             this.orderProductRepository.save(orderProduct);
-            return new SuccessResult("OrderProduct deleted");
+            return new Result(true,"OrderProduct deleted",null);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,"OrderProduct not deleted",ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 }
