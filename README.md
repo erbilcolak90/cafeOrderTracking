@@ -1,21 +1,11 @@
 # cafeOrderTracking
 
-## proje tanıtımı nasıl çalıştığı yazılacak
-
-### Turkish
-cafeOrderTracking projesi,cafe-restorant vb iş yerlerinde kullanılması için
-oluşturulmuş sipariş ve sipariş takip sistemidir.Müşterilerin masa numarası, sisteme
-işlenerek masaya ait sipariş oluşturulması ve müşteri siparişlerinin işlenmesini içerir.
-Sipariş edilen ürünler, ürün Id si ile adisyonda tutulur ve siparişe ait ürün bilgisi ile toplam tutarı gösterir.
-
-### English
 For use in cafeOrderTracking project, cafe-restaurant etc. workplaces
 It is an order and order tracking system created. The table number of the customers
 It includes creating an order for the table by processing and processing customer orders.
 The ordered products are kept in the ticket with the product ID and show the product information of the order and the total amount.
 
-
-## entities
+## Entities
 
 - Product,
 - OrderProduct,
@@ -23,62 +13,59 @@ The ordered products are kept in the ticket with the product ID and show the pro
 - Desk
 
 ### Product
+
 It is the class created for the product in the system.
 
-- Id;
-- createDate;
-- updateDate;
-- isDeleted;
-- name;
-- price;
-- 
-contains information
+- Id: `String`
+- createDate: `Date`
+- updateDate: `Date`
+- isDeleted: `boolean`
+- name: `String`
+- price: `int`
 
-## Order
+### Order
+
 It is the class created for the Order
-- id;
-- createDate;
-- updateDate;
-- isDeleted;
-- deskId;
-- orderProductList;
-- status;
-- isComplated;
-- total;
-- 
-contains information
 
-OrderProductList is not entered while creating the order. When the customer places an order
-Product information is added later.
+- Id: `String`
+- createDate: `Date`
+- updateDate: `Date`
+- isDeleted: `boolean`
+- deskId: `String`
+- orderProductList: `List<OrderProduct>`
+- status: `boolean`
+- isComplated: `boolean`
+- total: `int`
 
-## OrderProduct
+_Notes:_ OrderProductList is not entered while creating the order. When the customer places an order. Product information is added later.
+
+### OrderProduct
+
 It is the class that contains the information of the product to be ordered.
-- Id;
-- createDate;
-- updateDate;
-- isDeleted;
-- productId;
-- currentProductPrice;
-- orderId;
-- quantity;
 
-contains information.
+- Id: `String`
+- createDate: `Date`
+- updateDate: `Date`
+- isDeleted: `boolean`
+- productId: `String`
+- currentProductPrice: `int`
+- orderId: `String`
+- quantity: `int`
 
-What can be done about the price field in the product class
-  currentProductPrice so that updates do not affect historical data in the database.
-  held by the variable. Thus, the confusion that price changes may create in the database in possible updates is prevented.
-## Desk
-- id;
-- createDate;
-- updateDate;
-- isDeleted;
-- tableName;
-- activeOrderId;
+_Notes:_ What can be done about the price field in the product class currentProductPrice so that updates do not affect historical data in the database. held by the variable. Thus, the confusion that price changes may create in the database in possible updates is prevented.
 
-contains information.
+### Desk
 
-It contains information about whether there is an active order on the table.
-The created order information is kept with activeOrderId.
+It is the class that contains the information of the desk.
+
+- Id: `String`
+- createDate: `Date`
+- updateDate: `Date`
+- isDeleted: `boolean`
+- tableName: `String`
+- activeOrderId: `String`
+
+_Notes:_ It contains information about whether there is an active order on the table. The created order information is kept with activeOrderId.
 
 # Rest Api
 
@@ -89,283 +76,232 @@ RestController("/orderProduct")
 RestController("/desk")
 ```
 
----------
-
 ## Add Product
 
-----------
+### Request
 
-## Request
-
-
-### /addProduct
-
-`Post /addProduct/`
-
-----------
-
-`
-url: application/json'  @Valid @RequestBody ('name','price') http://localhost:8080/products/addProduct
-`
-
----------------
+```
+method: POST
+url: /products/addProduct
+requestSample: http://localhost:8080/products/addProduct
+requestParams: -
+requestBody: {
+  name: String,
+  price: int
+}
+```
 
 ### Response
 
----------
-
-```` {
+```
 {
-    "success": true,
-    "message": "Product added",
-    "data": null
+  "success": true,
+  "message": "Product added",
+  "data": null
 }
-````
+```
 
---------
+---
 
 ## Change Product Price
 
----------
+### Request
 
-## Request
-
-
-`Post /changeProductPrice`
-
------------
-
-`url: application/json' @Valid @RequestParam (productId,productPrice) http://localhost:8080/products/changeProductPrice?id=1&price=100`
-
-----------
+```
+method: POST
+url: /products/changeProductPrice
+requestSample: http://localhost:8080/products/changeProductPrice?productId=1&productPrice=20
+requestParams: productId: String, productPrice: int
+requestBody: -
+```
 
 ### Response
 
-----------
-
-````
+```
 {
-    "success": true,
-    "message": "Product price changed",
-    "data": {
-        "id": "1",
-        "createDate": "2022-07-04T20:54:29.559+00:00",
-        "updateDate": "2022-07-14T11:14:30.307+00:00",
-        "name": "Köfte Izgara",
-        "price": 110,
-        "deleted": false
-    }
+  "success": true,
+  "message": "Product price changed",
+  "data": {
+    "id": "1",
+    "createDate": "2022-07-04T20:54:29.559+00:00",
+    "updateDate": "2022-07-14T11:14:30.307+00:00",
+    "name": "Köfte Izgara",
+    "price": 110,
+    "deleted": false
+  }
 }
-````
+```
 
-----------
+---
 
 ## Get a specific Product
 
----------
+### Request
 
-### Request 
-
-`Get /getProduct`
-
----------
-
-`
-url: application/json' @Valid @RequestParam ('productId')  http://localhost:8080/products/getProduct?productId=1
-`
+```
+method: GET
+url: /products/getProduct
+requestSample: http://localhost:8080/products/getProduct?productId=1
+requestParams: productId: String
+requestBody: -
+```
 
 ### Response
 
------------
-
-````
+```
 {
-    "success": true,
-    "message": "Product listed",
-    "data": {
-        "id": "1",
-        "createDate": "2022-07-04T20:54:29.559+00:00",
-        "updateDate": "2022-07-14T11:14:30.307+00:00",
-        "name": "Köfte Izgara",
-        "price": 110,
-        "deleted": false
-    }
+  "success": true,
+  "message": "Product listed",
+  "data": {
+    "id": "1",
+    "createDate": "2022-07-04T20:54:29.559+00:00",
+    "updateDate": "2022-07-14T11:14:30.307+00:00",
+    "name": "Köfte Izgara",
+    "price": 110,
+    "deleted": false
+  }
 }
-````
-----------
+```
 
+---
 
 ## Get All Products
 
-----------
-
 ### Request
 
-`Get /getAllProduct/`
-
------------
-`
-url : application/json' http://localhost:8080/products/getAllProducts
-`
-
---------
+```
+method: GET
+url: /products/getAllProduct
+requestSample: http://localhost:8080/products/getAllProduct
+requestParams: -
+requestBody: -
+```
 
 ### Response
 
--------
+```
+  "success": true,
+  "message": "Products listed",
+  "data": [
+    {
+      "id": "1",
+      "createDate": "2022-07-04T20:54:29.559+00:00",
+      "updateDate": "2022-07-14T11:14:30.307+00:00",
+      "name": "Köfte Izgara",
+      "price": 110,
+      "deleted": false
+    },
+  ]
+```
 
-````
-
-    "success": true,
-    "message": "Products listed",
-    "data": [
-        {
-            "id": "1",
-            "createDate": "2022-07-04T20:54:29.559+00:00",
-            "updateDate": "2022-07-14T11:14:30.307+00:00",
-            "name": "Köfte Izgara",
-            "price": 110,
-            "deleted": false
-        },
-        {
-            "id": "2",
-            "createDate": "2022-07-04T20:54:56.183+00:00",
-            "updateDate": "2022-07-13T13:42:43.979+00:00",
-            "name": "Sucuk Izgara",
-            "price": 55,
-            "deleted": true
-        },
-        ....
-        }
-````
-
------------
+---
 
 ## Page Product List
 
--------------
-
 ### Request
 
-`Get /pageableProductList/`
-
-------------
-
-`
-url : application/json' (@RequestParam int pageNumber,@RequestParam int pageSize) http://localhost:8080/products/pageableProductList?number&size
-`
----------
+```
+method: GET
+url: /products/pageableProductList
+requestSample: ttp://localhost:8080/products/pageableProductList?number=1&size=10
+requestParams: pageNumber: int, pageSize: int
+requestBody: -
+```
 
 ### Response
 
-````
+```
 {
-    "success": true,
-    "message": "Page(s) listed",
-    "data": {
-        "content": [
-            {
-                "id": "1",
-                "createDate": "2022-07-04T20:57:52.808+00:00",
-                "updateDate": "2022-07-05T16:57:03.433+00:00",
-                "name": "Köfte Et Karışık Izgara",
-                "price": 120,
-                "deleted": false
-            },
-            {
-                "id": "2",
-                "createDate": "2022-07-04T20:56:18.502+00:00",
-                "updateDate": "2022-07-04T20:56:18.502+00:00",
-                "name": "Kuzu Şiş",
-                "price": 70,
-                "deleted": false
-            },
-           
-           .....
-           }
-        ],
-        "pageable": {
-            "sort": {
-                "empty": false,
-                "unsorted": false,
-                "sorted": true
-            },
-            "offset": 15,
-            "pageNumber": 3,
-            "pageSize": 5,
-            "paged": true,
-            "unpaged": false
-        },
-        "last": false,
-        "totalElements": 30,
-        "totalPages": 6,
-        "size": 5,
-        "number": 3,
-        "sort": {
-            "empty": false,
-            "unsorted": false,
-            "sorted": true
-        },
-        "first": false,
-        "numberOfElements": 5,
-        "empty": false
-    }
+  "success": true,
+  "message": "Page(s) listed",
+  "data": {
+    "content": [
+      {
+        "id": "1",
+        "createDate": "2022-07-04T20:57:52.808+00:00",
+        "updateDate": "2022-07-05T16:57:03.433+00:00",
+        "name": "Köfte Et Karışık Izgara",
+        "price": 120,
+        "deleted": false
+      }
+    ],
+    "pageable": {
+      "sort": {
+        "empty": false,
+        "unsorted": false,
+        "sorted": true
+      },
+      "offset": 15,
+      "pageNumber": 3,
+      "pageSize": 5,
+      "paged": true,
+      "unpaged": false
+    },
+    "last": false,
+    "totalElements": 30,
+    "totalPages": 6,
+    "size": 5,
+    "number": 3,
+    "sort": {
+        "empty": false,
+        "unsorted": false,
+        "sorted": true
+    },
+    "first": false,
+    "numberOfElements": 5,
+    "empty": false
+  }
 }
-````
+```
 
-------------
+---
 
 ## Delete Product
 
----------
+---
 
 ### Request
 
-`Delete /deleteProduct`
-
-------------
-
-`
-url: application/json' @Valid @RequestParam ('productId')  http://localhost:8080/products/deleteProduct?id=1
-`
-----------
+```
+method: POST
+url: /products/deleteProduct
+requestSample: ttp://localhost:8080/products/deleteProduct?productId=1
+requestParams: productId : String
+requestBody: -
+```
 
 ### Response
 
-
--------
-
-````
+```
 {
-    "success": true,
-    "message": "Product deleted",
-    "data": null
+  "success": true,
+  "message": "Product deleted",
+  "data": null
 }
-````
+```
 
------------
+---
 
 ## Create Order
 
----------
+---
 
 ### Request
 
-`Post /createOrder`
-
-----------
-
-`
-url: application/json' @Valid @RequestParam ('productId')  http://localhost:8080/products/deleteProduct?id=1
-`
-----------
+```
+method: POST
+url: /orders/createOrder
+requestSample:/ http://localhost:8080/orders/createOrder
+requestParams : -
+requestBody: {
+    deskId: int
+}
+```
 
 ### Response
 
 
--------
-
-````
+```
 {
     "success": true,
     "message": "Order Created",
@@ -381,31 +317,27 @@ url: application/json' @Valid @RequestParam ('productId')  http://localhost:8080
         "deleted": false
     }
 }
-````
+```
 
------------
+---
 
 ## Complete Order
 
----------
+---
 
 ### Request
 
-`Put /completeOrder`
-
----------
-
-`
-url: application/json' @Valid @RequestParam ('orderId')  http://localhost:8080/orders/completeOrder?orderId=1
-`
-----------
+```
+method: PUT
+url: /orders/completeOrder
+requestSample:/ http://localhost:8080/orders/completeOrder?orderId=1
+requestParams : orderId : String
+requestBody: -
+```
 
 ### Response
 
-
--------
-
-````
+```
 {
     "success": true,
     "message": "Orders listed",
@@ -448,65 +380,53 @@ url: application/json' @Valid @RequestParam ('orderId')  http://localhost:8080/o
        }
     ]
 }
-````
+```
 
------------
+---
 
-## Create Order
+## Change Order Desk
 
----------
-
+---
 
 ### Request
 
-`Put /changeOrderDesk`
-
----------
-
-`
-url: application/json' @Valid @RequestParam ('orderId','deskId')  http://localhost:8080/orders/changeToOrderDesk?orderId=1&deskId=1
-`
-----------
+```
+method: PUT
+url: /orders/changeOrderDesk
+requestSample:/ http://localhost:8080/orders/changeToOrderDesk?orderId=1
+requestParams : orderId : String
+requestBody: -
+```
 
 ### Response
 
-
--------
-
-````
+```
 {
     "success": true,
     "message": "Desk changed",
     "data": null
 }
-````
+```
 
------------
-
-
-
+---
 
 ## Get specific Order
 
----------
+---
 
 ### Request
 
-`Get /getOrder`
-
-----------
-
-`
-url: application/json' @Valid @RequestParam ('orderId')  http://localhost:8080/orders/getOrder?orderId=
-`
-----------
+```
+method: GET
+url: /orders/getOrder
+requestSample:/ http://localhost:8080/orders/getOrder?orderId=1
+requestParams : orderId : String
+requestBody: -
+```
 
 ### Response
 
-
--------
-
-````
+```
 {
     "success": true,
     "message": "Order listed",
@@ -535,38 +455,34 @@ url: application/json' @Valid @RequestParam ('orderId')  http://localhost:8080/o
         "deleted": true
     }
 }
-````
+```
 
------------
+---
 
 ## Get All Order List
 
----------
+---
 
 ### Request
 
-`Get /getAllOrder`
-
------------
-
-`
-url: application/json'  http://localhost:8080/orders/getAllOrders
-`
-----------
+```
+method: GET
+url: /orders/getAllOrder
+requestSample:/ http://localhost:8080/orders/getAllOrders
+requestParams : -
+requestBody: -
+```
 
 ### Response
 
-
--------
-
-````
+```
 {
     "id": "1",
     "createDate": "2022-07-11T14:49:02.345+00:00",
     "updateDate": "2022-07-13T14:13:17.442+00:00",
     "deskId": "1",
     "orderProductList": [
-        {  
+        {
         {
             "id": "2",
             "createDate": "2022-07-11T14:51:11.943+00:00",
@@ -578,143 +494,115 @@ url: application/json'  http://localhost:8080/orders/getAllOrders
             "deleted": false
         }
     ],
-    
+
     ...
-    
+
     "status": "COMPLETE",
     "total": 570,
     "deleted": false,
     "complated": true
 }
-````
+```
 
------------
-
+---
 
 ## Delete Order
 
----------
+---
 
 ### Request
 
-`Delete /deleteOrder`
-
--------------
-
-`
-url: application/json' @Valid @RequestParam (orderId) http://localhost:8080/orders/deleteOrder?orderId=1
-`
-----------
+```
+method: DELETE
+url: /orders/deleteOrder
+requestSample:/ http://localhost:8080/orders/deleteOrder?orderId=1
+requestParams : orderId : String
+requestBody: -
+```
 
 ### Response
 
-
--------
-
-````
+```
 {
-    "id": "1",
-    "createDate": "2022-07-11T14:49:02.345+00:00",
-    "updateDate": "2022-07-13T14:13:17.442+00:00",
-    "deskId": "1",
-    "orderProductList": [
-        {  
-        {
-            "id": "62cc38dfb2d856298d2ff66f",
-            "createDate": "2022-07-11T14:51:11.943+00:00",
-            "updateDate": "2022-07-11T14:51:11.943+00:00",
-            "productId": "62c35385ffab2d56bb689d86",
-            "currentProductPrice": 50,
-            "orderId": "62cc385eb2d856298d2ff66e",
-            "quantity": 1,
-            "deleted": false
-        }
-    ],
-    ...
-    
-    "status": "CANCEL",
-    "total": 570,
-    "deleted": true,
-    "complated": false
+    "success": true,
+    "message": "Order deleted",
+    "data": null
 }
-````
+```
 
------------
+---
 
 ## Add OrderProduct
 
----------
+---
 
 ### Request
 
-`Post /addOrderProduct`
+```
+method: POST
+url: /orderProducts/addOrderProduct
+requestSample:/ http://localhost:8080/orderProducts/addOrderProduct
+requestParams : -
+requestBody: 
+{ productId: String
+  orderId: String
+  quantity: int }
+```
 
--------------
-
-`
-url: application/json' @Valid @RequestBody (productId,orderId,quantity) http://localhost:8080/orderProducts/addOrderProduct
-`
-----------
 
 ### Response
 
+---
 
--------
-
-````
+```
 {
     "success": true,
     "message": "OrderProduct added",
     "data": {
         "id": "1",
-        "createDate": "2022-07-11T14:49:02.345+00:00",
-        "updateDate": "2022-07-14T11:28:36.493+00:00",
-        "deskId": "",
+        "createDate": "2022-07-14T17:25:54.919+00:00",
+        "updateDate": "2022-07-14T17:27:05.858+00:00",
+        "deskId": "2",
         "orderProductList": [
             {
-                "id": null,
-                "createDate": null,
-                "updateDate": null,
-                "productId": "2",
-                "currentProductPrice": 120,
-                "orderId": null,
-                "quantity": 1,
+                "id": "3",
+                "createDate": "2022-07-14T17:27:05.723+00:00",
+                "updateDate": "2022-07-14T17:27:05.723+00:00",
+                "productId": "4",
+                "currentProductPrice": 110,
+                "orderId": "1",
+                "quantity": 17,
                 "deleted": false
-            },
-            ...
             }
         ],
-        "status": "CANCEL",
-        "total": 570,
-        "complated": false,
-        "deleted": true
+        "status": "WAITING",
+        "total": 0,
+        "deleted": false,
+        "complated": false
     }
 }
-````
+```
 
------------
+---
 
 ## Get All OrderProduct
 
----------
+---
 
 ### Request
 
-`Get /getAllOrderProduct`
-
--------------
-
-`
-url: application/json' http://localhost:8080/orderProducts/getAllOrderProducts
-`
-----------
-
+```
+method: GET
+url: /orderProducts/getAllOrderProduct
+requestSample:/ http://localhost:8080/orderProducts/getAllOrderProduct
+requestParams : -
+requestBody: -
+```
 ### Response
 
+---
 
--------
-
-````
+```
 {
     "success": true,
     "message": "OrderProduct listed",
@@ -724,101 +612,94 @@ url: application/json' http://localhost:8080/orderProducts/getAllOrderProducts
             "createDate": "2022-07-05T13:31:26.552+00:00",
             "updateDate": "2022-07-05T13:31:26.552+00:00",
             "productId": "62c35385ffab2d56bb689d86",
-            "currentProductPrice": 0,
+            "currentProductPrice": 180,
             "orderId": "62c43c13859caa5dd5883e57",
             "quantity": 2,
             "deleted": false
         },
-        ...
-        }
+       ...
     ]
 }
-````
+```
 
------------
+---
 
 ## Delete specific OrderProduct
 
----------
+---
 
 ### Request
 
-`Delete /deleteOrderProduct`
-
--------------
-
-`
-url: application/json' @Valid @RequestParam (orderProductId) http://localhost:8080/orderProducts/deleteOrderProduct?orderProductId=1
-`
-----------
+```
+method: DELETE
+url: /orderProducts/deleteOrderProduct
+requestSample:/ http://localhost:8080/orderProducts/deleteOrderProduct?orderProductId=
+requestParams : orderProductId : String
+requestBody: -
+```
 
 ### Response
 
+---
 
--------
-
-````
+```
 {
     "success": true,
     "message": "OrderProduct deleted",
     "data": null
 }
-````
+```
 
------------
-
+---
 
 ## Add Desk
 
----------
+---
 
 ### Request
 
-`Post /addDesk`
-
--------------
-
-`
-url: application/json' @Valid @RequestBody (deskName) http://localhost:8080/desks/addDesk
-`
-----------
-
+```
+method: POST
+url: /desks/addDesk
+requestSample:/ http://localhost:8080/desks/addDesk
+requestParams : -
+requestBody: {
+    tableName : String
+}
+```
 ### Response
 
+---
 
--------
-
-````
+```
 {
     "success": true,
     "message": "Desk added",
     "data": null
 }
-````
+```
 
------------
+---
 
 ## Get All Desks
 
----------
+---
 
 ### Request
 
-`Get /getAllDesks`
-
--------------
-
-`
-url: application/json' http://localhost:8080/desks/getAllDesks
-`
-----------
+```
+method: GET
+url: /desks/getAllDesks
+requestSample:/ http://localhost:8080/desks/getAllDesks?
+requestParams : -
+requestBody: -
+```
 
 ### Response
 
+---
 
--------
-
-````
+```
 {
     "success": true,
     "message": "Desks listed",
@@ -826,48 +707,42 @@ url: application/json' http://localhost:8080/desks/getAllDesks
         {
             "id": "1",
             "createDate": "2022-07-04T20:54:29.559+00:00",
-            "updateDate": "2022-07-14T11:23:29.213+00:00",
+            "updateDate": "2022-07-14T17:25:55.761+00:00",
             "tableName": "masa 1",
-            "activeOrderId": null,
+            "activeOrderId": "",
             "deleted": false
         },
-        ...
-        }
+       ...
     ]
 }
-````
+```
 
------------
+---
 
 ## Delete Desk
 
----------
+---
 
 ### Request
 
-`Delete /deleteDesk`
-
--------------
-
-`
-url: application/json' @Valid @RequestParam (deskId)  http://localhost:8080/desks/deleteDesk
-`
-----------
+```
+method: DELETE
+url: /desks/deleteDesk
+requestSample:/ http://localhost:8080/desks/deleteDesk?deskId=1
+requestParams : deskId : String
+requestBody: -
+```
 
 ### Response
 
+---
 
--------
-
-````
+```
 {
     "success": true,
     "message": "Desk deleted",
     "data": null
 }
-````
+```
 
------------
-
-
-
+---

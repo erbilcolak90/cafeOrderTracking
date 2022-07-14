@@ -1,9 +1,9 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
+import com.kofteciyusuf.app.businness.services.OrderService;
 import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.OrderProduct;
 import com.kofteciyusuf.app.enums.OrderEnums;
-import com.kofteciyusuf.app.businness.services.OrderService;
 import com.kofteciyusuf.app.entities.Desk;
 import com.kofteciyusuf.app.entities.Order;
 import com.kofteciyusuf.app.repositories.DeskRepository;
@@ -11,9 +11,7 @@ import com.kofteciyusuf.app.repositories.OrderProductRepository;
 import com.kofteciyusuf.app.repositories.OrderRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,12 +38,20 @@ public class OrderManager implements OrderService {
     public Result createOrder(Order order) {
 
         try {
+            //
             order.setCreateDate(new Date());
+            //
             order.setUpdateDate(new Date());
+            //
             order.setDeleted(false);
+            //
             order.setStatus(OrderEnums.WAITING.toString());
+            //
             order.setComplated(false);
+            //
             order.setOrderProductList(new ArrayList<OrderProduct>());
+            //
+            order.setTotal(0);
             Desk desk = this.deskRepository.findById(order.getDeskId()).orElseThrow();
             desk.setUpdateDate(new Date());
             desk.setActiveOrderId(order.getId());
@@ -140,7 +146,7 @@ public class OrderManager implements OrderService {
             //save order database
             this.orderRepository.save(order);
             this.deskRepository.save(desk);
-            return new Result(true,"Order deleted",null);
+            return new Result(true, "Order deleted", null);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

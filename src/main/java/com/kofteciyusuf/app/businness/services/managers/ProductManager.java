@@ -1,7 +1,7 @@
 package com.kofteciyusuf.app.businness.services.managers;
 
 import com.kofteciyusuf.app.businness.services.ProductService;
-import com.kofteciyusuf.app.core.*;
+import com.kofteciyusuf.app.core.Result;
 import com.kofteciyusuf.app.entities.Product;
 import com.kofteciyusuf.app.repositories.ProductRepository;
 import lombok.NoArgsConstructor;

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class Order {
     private Date updateDate;
     private boolean isDeleted;
     private String deskId;
-    @NotEmpty
+    @Null
     private List<OrderProduct> orderProductList;
     private String status;
     private boolean isComplated;
